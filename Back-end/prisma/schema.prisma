@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@35.187.238.249:3306/farm"
+  url      = "mysql://root:OnlyGodknow@34.126.105.119:3306/farm"
 }
 
 model User {
@@ -32,7 +32,7 @@ model Cow {
   cowName    String
   dobCow     DateTime  @default(now()) @updatedAt
   sex        String
-  detail     String
+  detail     String?
   farm       Farm      @relation(fields: [farmId], references: [id])
   farmId     Int
   cowEvent   CowEvent? @relation(fields: [cowEventId], references: [id])
@@ -45,11 +45,11 @@ model CowEvent {
   cowName      String   @db.VarChar(150)
   dobCow       DateTime
   sex          String
-  detail       String
+  detail       String?
   semen        String   @db.VarChar(150)
   breed        DateTime @default(now()) @updatedAt
   heat         DateTime @default(now()) @updatedAt
   pregnacyTest String
   maternity    String
-  cow          Cow?
+  cow          Cow[]
 }

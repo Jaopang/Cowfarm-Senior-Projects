@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import {
   AccountCircleIcon,
@@ -24,6 +24,9 @@ import {
   ListItemText,
 } from "@mui/material";
 import AgricultureTwoToneIcon from "@mui/icons-material/AgricultureTwoTone";
+import { api } from "../baseURL/url";
+import PersonIcon from "@mui/icons-material/Person";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
@@ -32,6 +35,9 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function Header() {
+  const [dataView, setDataView] = useState([]);
+  const id = localStorage.getItem("Logged");
+  const navigate = useNavigate();
   const [anchorElNav, setAnchorElNav] = React.useState(null);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
@@ -49,9 +55,18 @@ export default function Header() {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
+  useEffect(() => {
+    api.get(`api/user/${id}`).then((res) => {
+      setDataView(res.data);
+    });
+  }, []);
+  const onLogout = () => {
+    localStorage.removeItem("Logged");
+    navigate("/");
+  };
   const appbar = (
     <div>
-      <Stack direction="row" spacing={1} sx={{ marginX: "auto", marginTop: 1 }}>
+      <Stack direction="row" spacing={2} sx={{ marginX: "auto", marginTop: 1 }}>
         <Grid>
           <ListItemButton href="/home">
             <AgricultureTwoToneIcon />
@@ -79,12 +94,17 @@ export default function Header() {
           </ListItemButton>
         </Grid>
         <Grid>
-          <ListItemButton>
+          <ListItemButton onClick={onLogout}>
             <ListItemText primary="ออกจากระบบ" />
           </ListItemButton>
         </Grid>
-        <Grid sx={{ minWidth: 200 }} align="right">
-          <Typography sx={{ mt: 1 }}>ชื่อผู้ใช้ :</Typography>
+        <Grid container md={2} style={{ marginLeft: 250 }}>
+          <Grid sx={{ mt: 1 }}>
+            <PersonIcon sx={{ mt: 1 }} />
+          </Grid>
+          <Grid sx={{ mt: 1 }}>
+            <Typography sx={{ mt: 1 }}>ชื่อผู้ใช้ : {dataView.name}</Typography>
+          </Grid>
         </Grid>
       </Stack>
     </div>
@@ -94,6 +114,7 @@ export default function Header() {
     <>
       <AppBar
         position="fixed"
+        zIndex={2}
         sx={{
           height: 60,
           boxShadow: "none",

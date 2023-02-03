@@ -3,7 +3,7 @@ import { Toolbar, Typography } from "@material-ui/core";
 
 function Footer() {
   return (
-    <>
+    <div>
       <Toolbar
         style={{ justifyContent: "center", marginTop: 50 }}
         sx={{ bgcolor: "#282c34" }}
@@ -12,7 +12,7 @@ function Footer() {
           @Copyrigth dy Comsic Power by Thanasorn 2022
         </Typography>
       </Toolbar>
-    </>
+    </div>
   );
 }
 

@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState } from "react";
 import Header from "../components/Header";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
@@ -16,7 +16,21 @@ import {
   MenuItem,
   Grid,
   TextField,
+  TableCell,
+  TableRow,
+  Stack,
+  ToggleButton,
+  ToggleButtonGroup,
 } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import { api } from "../baseURL/url";
+import dayjs from "dayjs";
+import "dayjs/locale/fr";
+import "dayjs/locale/ru";
+import "dayjs/locale/de";
+import "dayjs/locale/ar-sa";
+import { TimePicker } from "@mui/x-date-pickers/TimePicker";
+const locales = ["en"];
 
 const theme = createTheme({
   palette: {
@@ -30,12 +44,38 @@ const theme = createTheme({
 });
 
 export default function CreateCows() {
-  const handleChange = (event) => {
-    setAge(event.target.value);
-  };
+  const [locale, setLocale] = React.useState("en");
+  const [datePickerValue, setDatePickerValue] = React.useState(dayjs());
 
+  const [file, setFile] = useState("");
+  const navigate = useNavigate();
+  const { id } = useParams();
+  const [data, setData] = useState({
+    cowName: "",
+    sex: "",
+    detail: "",
+  });
   const [age, setAge] = React.useState();
   const [value, setValue] = React.useState(null);
+
+  const handleImage = (event) => {
+    let image = event.target.files;
+    let read = new FileReader();
+    read.onload = (e) => {
+      setData({ ...data, image: String(e.target?.result) });
+    };
+    read.readAsDataURL(image[0]);
+    setFile(URL.createObjectURL(image[0]));
+  };
+  const handleData = (event) => {
+    setData({ ...data, [event.target.name]: event.target.value });
+    setAge(event.target.value);
+  };
+  const onCreateCows = async () => {
+    data.farmId = id;
+    api.post("/api/cow", data).then((res) => navigate(`/home`));
+    console.log("Success:", data);
+  };
   return (
     <>
       <Header />
@@ -76,17 +116,52 @@ export default function CreateCows() {
               เพิ่มวัว
             </Typography>
             <div>
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ height: 45 }}
-                color="secondary"
-                borderRadius={5}
-              >
-                อัพรูปภาพ
-                <input hidden accept="image/*" multiple type="file" />
-                <AddPhotoAlternateIcon />
-              </Button>
+              <TableCell rowSpan={4} sx={{ textAlign: "center" }}>
+                {file ? (
+                  <div>
+                    <TableRow>
+                      <img
+                        src={file}
+                        style={{
+                          height: 150,
+                          width: 150,
+                          borderRadius: 5,
+                          marginRight: "auto",
+                        }}
+                      />
+                    </TableRow>
+                    <TableRow>
+                      <Button variant="outlined" component="label" size="small">
+                        เปลี่ยนรูปภาพ
+                        <input
+                          hidden
+                          accept="image/*"
+                          multiple
+                          type="file"
+                          onChange={handleImage}
+                        />
+                      </Button>
+                    </TableRow>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    sx={{ height: 150, width: 150 }}
+                    component="label"
+                  >
+                    <AddPhotoAlternateIcon />
+                    เพิ่มรูปภาพ
+                    <input
+                      hidden
+                      accept="image/*"
+                      multiple
+                      type="file"
+                      onChange={handleImage}
+                    />
+                  </Button>
+                )}
+              </TableCell>
             </div>
             <Grid
               container
@@ -108,15 +183,16 @@ export default function CreateCows() {
               </Grid>
               <Grid item md={8} xs={8}>
                 <TextField
-                  name="email"
+                  name="cowName"
                   margin="normal"
                   type={"email"}
                   variant="outlined"
                   placeholder="กรุณาใส่ชื่อวัว"
                   sx={{ width: 265 }}
+                  onChange={handleData}
                 />
               </Grid>
-              <Grid
+              {/* <Grid
                 item
                 xs={4}
                 md={3}
@@ -126,21 +202,21 @@ export default function CreateCows() {
                 <Typography variant="contained" sx={{ mt: 15 }}>
                   วันเกิดวัว:
                 </Typography>
-              </Grid>
-              <Grid item md={8} xs={8} sx={{ mt: 2 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    views={["day", "month", "year"]}
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} helperText={null} />
-                    )}
-                  />
+              </Grid> */}
+              {/* <Grid item md={8} xs={8} sx={{ mt: 2 }}>
+                <LocalizationProvider
+                  dateAdapter={AdapterDayjs}
+                  adapterLocale={locale}
+                >
+                  <Stack spacing={3}>
+                    <DatePicker
+                      value={datePickerValue}
+                      onChange={(newValue) => setDatePickerValue(newValue)}
+                      renderInput={(params) => <TextField {...params} />}
+                    />
+                  </Stack>
                 </LocalizationProvider>
-              </Grid>
+              </Grid> */}
               <br />
               <Grid
                 item
@@ -155,11 +231,12 @@ export default function CreateCows() {
               </Grid>
               <Grid item md={8} xs={8} sx={{ mt: 2 }}>
                 <Select
+                  name="sex"
                   labelId="demo-select-small"
                   id="demo-select-small"
-                  value={age}
-                  label="Age"
-                  onChange={handleChange}
+                  // value={sex}
+                  label="sex"
+                  onChange={handleData}
                   sx={{ width: 100 }}
                 >
                   <MenuItem value={10}>เพศผู้</MenuItem>
@@ -175,7 +252,7 @@ export default function CreateCows() {
                 justifyContent="center"
               >
                 <Typography variant="contained" sx={{ marginTop: 15 }}>
-                  อื่นๆ :{" "}
+                  อื่นๆ :
                 </Typography>
               </Grid>
               <Grid item md={8} xs={8} sx={{ height: 50 }}>
@@ -187,6 +264,7 @@ export default function CreateCows() {
                   fullWidth={true}
                   placeholder="รายละเอียดต่างๆของวัว"
                   sx={{ width: 265 }}
+                  onChange={handleData}
                 />
               </Grid>
             </Grid>
@@ -195,6 +273,7 @@ export default function CreateCows() {
               sx={{ marginTop: 3, borderRadius: 3 }}
               variant="contained"
               color="success"
+              onClick={onCreateCows}
             >
               บันทึกข้อมูล
               <CreateNewFolderIcon />

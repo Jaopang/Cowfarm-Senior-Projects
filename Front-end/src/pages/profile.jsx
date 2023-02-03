@@ -1,18 +1,32 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, TableCell } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../components/Header";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
+import { api } from "../baseURL/url";
 
 const theme = createTheme({
   palette: {
     secondary: {
       main: "#7F9F9A",
     },
+    Error: {
+      main: "#FF4444",
+    },
+    Info: {
+      main: "#FFFFFF",
+    },
   },
 });
 export default function Profile() {
+  const [dataView, setDataView] = useState([]);
+  const id = localStorage.getItem("Logged");
+  useEffect(() => {
+    api.get(`api/user/${id}`).then((res) => {
+      setDataView(res.data);
+    });
+  }, []);
   return (
     <div>
       <Header />
@@ -55,32 +69,34 @@ export default function Profile() {
             <TableCell align="right">
               <img
                 style={{ height: 250, width: 200 }}
-                src="https://cms.dmpcdn.com/dara/2021/11/10/22126e10-41d7-11ec-ac29-755e2c04978c_original.jpg"
+                src={dataView.userImage}
               ></img>
             </TableCell>
             <Typography variant="h6" padding={1} textAlign="center">
-              ชื่อผู้ใช้ : เอกนรินทร์{" "}
+              ชื่อผู้ใช้ : {dataView.name}
             </Typography>
             <Typography variant="h6" padding={1} textAlign="center">
-              ไลน์ไอดี : @PP123444{" "}
+              ไลน์ไอดี : {dataView.lineId}
             </Typography>
             <Typography variant="h6" padding={1} textAlign="center">
-              อีเมล์ : Thanason0406@gmail.com{" "}
+              อีเมล์ : {dataView.email}
             </Typography>
-            <Typography variant="h6" padding={1} textAlign="center">
-              เข้าร่วมฟาร์มวันที่ : 3 กุมภาพันธ์ 2564{" "}
-            </Typography>
+
             <Button
               sx={{ marginTop: 3, borderRadius: 3 }}
               variant="contained"
-              color="warning"
-              // color="#282c34"
+              color="Info"
             >
               แก้ไขข้อมูล
             </Button>
-            <Button sx={{ marginTop: 3, borderRadius: 3 }} variant="contained">
-              สมัครสมาชิก
+            <Button
+              color="Error"
+              sx={{ marginTop: 3, borderRadius: 3 }}
+              variant="contained"
+            >
+              ลบวัว (ถาวร)
             </Button>
+            <br />
           </Box>
         </ThemeProvider>
         <br />

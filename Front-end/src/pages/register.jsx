@@ -1,9 +1,17 @@
-import React from "react";
-import { Box, Button, TextField, Typography, Grid } from "@mui/material";
+import React, { useState } from "react";
+import {
+  Box,
+  Button,
+  TextField,
+  Typography,
+  Grid,
+  TableCell,
+  TableRow,
+} from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-// import { api } from "../baseURL/url";
-// import { useNavigate } from "react-router-dom";
+import { api } from "../baseURL/url";
+import { useNavigate } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -14,15 +22,32 @@ const theme = createTheme({
 });
 
 export default function Register() {
-  // const navigate = useNavigate();
-
-  // const onFinish = async (values) => {
-  //   values.userImage = await toDataURL(values.file);
-  //   api
-  //     .post("/api/user", values)
-  //     .then((res) => navigate(`/createnewfarm/${res.data.id}`));
-  //   console.log("Success:", values);
-  // };
+  const [file, setFile] = useState("");
+  const navigate = useNavigate();
+  const [data, setData] = useState({
+    name: "",
+    email: "",
+    lineId: "",
+    password: "",
+  });
+  const handleData = (event) => {
+    setData({ ...data, [event.target.name]: event.target.value });
+  };
+  const onRegister = async () => {
+    api
+      .post("/api/user", data)
+      .then((res) => navigate(`/createnewfarm/${res.data.id}`));
+    console.log("Success:", data);
+  };
+  const handleImage = (event) => {
+    let image = event.target.files;
+    let read = new FileReader();
+    read.onload = (e) => {
+      setData({ ...data, image: String(e.target?.result) });
+    };
+    read.readAsDataURL(image[0]);
+    setFile(URL.createObjectURL(image[0]));
+  };
   return (
     <div>
       <from>
@@ -55,23 +80,52 @@ export default function Register() {
               สมัครสมาชิก
             </Typography>
             <div>
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ height: 45 }}
-                color="secondary"
-                borderRadius={5}
-              >
-                อัพรูปภาพ
-                <input
-                  hidden
-                  accept="image/*"
-                  multiple
-                  type="file"
-                  onChange={""}
-                />
-                <AddPhotoAlternateIcon />
-              </Button>
+              <TableCell rowSpan={4} sx={{ textAlign: "center" }}>
+                {file ? (
+                  <div>
+                    <TableRow>
+                      <img
+                        src={file}
+                        style={{
+                          height: 150,
+                          width: 150,
+                          borderRadius: 5,
+                          marginRight: "auto",
+                        }}
+                      />
+                    </TableRow>
+                    <TableRow>
+                      <Button variant="outlined" component="label" size="small">
+                        เปลี่ยนรูปภาพ
+                        <input
+                          hidden
+                          accept="image/*"
+                          multiple
+                          type="file"
+                          onChange={handleImage}
+                        />
+                      </Button>
+                    </TableRow>
+                  </div>
+                ) : (
+                  <Button
+                    variant="outlined"
+                    size="large"
+                    sx={{ height: 150, width: 150 }}
+                    component="label"
+                  >
+                    <AddPhotoAlternateIcon />
+                    เพิ่มรูปภาพ
+                    <input
+                      hidden
+                      accept="image/*"
+                      multiple
+                      type="file"
+                      onChange={handleImage}
+                    />
+                  </Button>
+                )}
+              </TableCell>
             </div>
             <Grid
               container
@@ -93,11 +147,12 @@ export default function Register() {
               </Grid>
               <Grid item md={8} xs={8}>
                 <TextField
-                  name="email"
+                  name="name"
                   margin="normal"
-                  type={"email"}
+                  type={"name"}
                   variant="outlined"
                   placeholder="กรุณาใส่ชื่อและนามสกุล"
+                  onChange={handleData}
                 />
               </Grid>
               <Grid
@@ -118,6 +173,7 @@ export default function Register() {
                   type={"email"}
                   variant="outlined"
                   placeholder="กรุณาใส่อีเมล์"
+                  onChange={handleData}
                 />
               </Grid>
               <Grid
@@ -138,6 +194,7 @@ export default function Register() {
                   type={"lineId"}
                   variant="outlined"
                   placeholder="กรุณาใส่ไอดีไลน์"
+                  onChange={handleData}
                 />
               </Grid>
               <Grid
@@ -158,6 +215,7 @@ export default function Register() {
                   type={"password"}
                   variant="outlined"
                   placeholder="กรุณาใส่รหัสผ่านใหม่"
+                  onChange={handleData}
                 />
               </Grid>
               <Grid
@@ -173,11 +231,24 @@ export default function Register() {
               </Grid>
               <Grid item md={8} xs={8}>
                 <TextField
+                  onChange={handleData}
                   name="confirmPassword"
                   margin="normal"
                   type={"confirmPassword"}
                   variant="outlined"
-                  placeholder="กรุณาใส่รหัสผ่าน อีกครั้ง"
+                  rules={[
+                    { required: true, message: "กรุณายืนยันรหัสผ่าน!" },
+                    ({ getFieldValue }) => ({
+                      validator(rule, value) {
+                        if (!value || getFieldValue("password") === value) {
+                          return Promise.resolve();
+                        }
+                        return Promise.reject(
+                          "รหัสผ่านสองรหัสที่คุณป้อนไม่ตรงกัน!"
+                        );
+                      },
+                    }),
+                  ]}
                 />
               </Grid>
             </Grid>
@@ -187,7 +258,7 @@ export default function Register() {
               color="secondary"
               htmlType="submit"
               className="btn-save"
-              // onClick={onFinish}
+              onClick={onRegister}
             >
               สมัครสมาชิก
             </Button>

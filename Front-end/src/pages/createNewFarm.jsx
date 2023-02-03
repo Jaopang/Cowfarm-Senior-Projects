@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Box, Button, TextField, Typography, Grid } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import DataSaverOnIcon from "@mui/icons-material/DataSaverOn";
-
+import { api } from "../baseURL/url";
+import { useNavigate, useParams } from "react-router-dom";
 const theme = createTheme({
   palette: {
     secondary: {
@@ -11,6 +12,20 @@ const theme = createTheme({
   },
 });
 export default function CreateNewFarm() {
+  const { id } = useParams();
+  const navigate = useNavigate();
+  console.log("id", id);
+  const [data, setData] = useState({
+    farmName: "",
+  });
+  const handleData = (event) => {
+    setData({ ...data, [event.target.name]: event.target.value });
+  };
+  const onCreateNewFarm = async () => {
+    data.userId = id;
+    api.post("/api/farm", data).then((res) => navigate(`/login`));
+    console.log("Success:", data);
+  };
   return (
     <div>
       <from>
@@ -62,12 +77,13 @@ export default function CreateNewFarm() {
               </Grid>
               <Grid item md={8} xs={8}>
                 <TextField
-                  name="nameFarm"
+                  name="farmName"
                   margin="normal"
-                  type={"nameFarm"}
+                  type={"farmName"}
                   variant="outlined"
                   placeholder="กรุณาใส่ชื่อฟาร์ม"
                   borderRadius={15}
+                  onChange={handleData}
                 />
               </Grid>
             </Grid>
@@ -75,15 +91,11 @@ export default function CreateNewFarm() {
               sx={{ marginTop: 3, borderRadius: 3 }}
               variant="contained"
               color="secondary"
-
-              // color="#282c34"
+              onClick={onCreateNewFarm}
             >
               <DataSaverOnIcon />
               สร้างฟาร์ม
             </Button>
-            {/* <Button sx={{ marginTop: 3, borderRadius: 3 }} variant="contained">
-            สมัครสมาชิก
-          </Button> */}
             <br />
           </ThemeProvider>
         </Box>

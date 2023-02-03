@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../components/Header";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
+import { api } from "../baseURL/url";
+
 const theme = createTheme({
   palette: {
     secondary: {
@@ -12,6 +14,16 @@ const theme = createTheme({
   },
 });
 export default function FarmDetails() {
+  const [load, setLoad] = useState({});
+  const [dataView, setDataView] = useState([]);
+
+  const id = localStorage.getItem("Logged");
+  useEffect(() => {
+    api.get(`api/farm/${id}`).then((res) => {
+      setDataView(res.data);
+      setLoad(false);
+    });
+  }, []);
   return (
     <div>
       <Header />
@@ -52,13 +64,14 @@ export default function FarmDetails() {
             }}
           >
             <Typography variant="h6" padding={1} textAlign="center">
-              ชื่อฟาร์ม : เพชรนรินทร์ ฟาร์ม
+              ชื่อฟาร์ม : {dataView.farmName}
             </Typography>
             <Typography variant="h6" padding={1} textAlign="center">
-              วันที่สร้างฟาร์ม : 3 กุมภาพันธ์ 2564
+              วันที่สร้างฟาร์ม : {dataView.createdAt}
             </Typography>
           </Box>
         </ThemeProvider>
+        <br />
         <br />
         <br />
       </Box>

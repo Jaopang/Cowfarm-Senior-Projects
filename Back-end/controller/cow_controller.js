@@ -1,7 +1,7 @@
 const prisma = require("../src/connection");
 
 module.exports.createCow = async function (req, reply) {
-  const { cowImage, cowName, dobCow, sex, detail } = req.body;
+  const { cowImage, cowName, dobCow, sex, detail, farmId } = req.body;
   const newCow = await prisma.Cow.create({
     data: {
       cowImage,
@@ -9,6 +9,7 @@ module.exports.createCow = async function (req, reply) {
       dobCow,
       sex,
       detail,
+      farmId: Number(farmId),
       include: { farm: true },
     },
   });

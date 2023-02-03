@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Header from "../components/Header";
 import Container from "../components/Container";
@@ -7,6 +7,8 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import AddIcon from "@mui/icons-material/Add";
+import { api } from "../baseURL/url";
+import { useParams } from "react-router-dom";
 
 import {
   Paper,
@@ -68,6 +70,20 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function HomeCowList() {
+  const { id } = useParams();
+
+  // const id = localStorage.getItem("Logged");
+  const [loading, setLoading] = useState(false); //state loading รอ data
+  const [dataList, setDataList] = useState([]);
+  console.log("id", id);
+
+  useEffect(() => {
+    api.get(`api/cow`).then((res) => {
+      setDataList(res.data);
+      setLoading();
+      console.log("dataList", dataList);
+    });
+  }, []);
   const handleChange = (event) => {
     setAge(event.target.value);
   };
@@ -171,27 +187,28 @@ export default function HomeCowList() {
                 <TableCell align="center">เพศ</TableCell>
                 <TableCell align="center">อื่นๆ</TableCell>
               </TableRow>
-              <TableRow>
-                <TableCell align="right">
-                  <img
-                    style={{ borderRadius: 30, height: 50, width: 50 }}
-                    src="https://cms.dmpcdn.com/dara/2021/11/10/22126e10-41d7-11ec-ac29-755e2c04978c_original.jpg"
-                  ></img>
-                </TableCell>
-                <TableCell>
-                  <Typography align="left">นิล</Typography>
-                </TableCell>
-
-                <TableCell>
-                  <Typography align="center">1Y9M3D</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography align="center">เมีย</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography align="center">GGGYFHJH-5</Typography>
-                </TableCell>
-              </TableRow>
+              {dataList.map((item) => (
+                <TableRow>
+                  <TableCell align="right">
+                    <img
+                      style={{ borderRadius: 30, height: 50, width: 50 }}
+                      src={item.cowImage}
+                    ></img>
+                  </TableCell>
+                  <TableCell>
+                    <Typography align="left">{item.cowName}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography align="center">{item.dobCow}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography align="center">{item.sex}</Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography align="center">{item.detail}</Typography>
+                  </TableCell>
+                </TableRow>
+              ))}
             </Table>
           </Paper>
         </ThemeProvider>
