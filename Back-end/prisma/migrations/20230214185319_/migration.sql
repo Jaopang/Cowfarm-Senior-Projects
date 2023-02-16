@@ -32,33 +32,41 @@ CREATE TABLE `Cow` (
     `detail` VARCHAR(191) NULL,
     `farmId` INTEGER NOT NULL,
     `cowEventId` INTEGER NULL,
+    `vaccineId` INTEGER NULL,
 
     UNIQUE INDEX `Cow_cowEventId_key`(`cowEventId`),
+    UNIQUE INDEX `Cow_vaccineId_key`(`vaccineId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
 CREATE TABLE `CowEvent` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `cowImage` LONGTEXT NULL,
-    `cowName` VARCHAR(150) NOT NULL,
-    `dobCow` DATETIME(3) NOT NULL,
-    `sex` VARCHAR(191) NOT NULL,
-    `detail` VARCHAR(191) NULL,
     `semen` VARCHAR(150) NOT NULL,
     `breed` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `heat` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `pregnacyTest` VARCHAR(191) NOT NULL,
-    `maternity` VARCHAR(191) NOT NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Vaccine` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `nameVaccineTH` VARCHAR(150) NOT NULL,
+    `nameVaccineEng` VARCHAR(150) NOT NULL,
+    `vaccineId` VARCHAR(150) NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `Farm` ADD CONSTRAINT `Farm_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `Farm` ADD CONSTRAINT `Farm_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Cow` ADD CONSTRAINT `Cow_farmId_fkey` FOREIGN KEY (`farmId`) REFERENCES `Farm`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `Cow` ADD CONSTRAINT `Cow_cowEventId_fkey` FOREIGN KEY (`cowEventId`) REFERENCES `CowEvent`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Cow` ADD CONSTRAINT `Cow_vaccineId_fkey` FOREIGN KEY (`vaccineId`) REFERENCES `Vaccine`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

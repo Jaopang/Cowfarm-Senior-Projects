@@ -1,5 +1,4 @@
 const prisma = require("../src/connection");
-
 module.exports.createUser = async function (req, reply) {
   const { name, email, password, lineId, userImage } = req.body;
   const newUser = await prisma.user.create({
@@ -48,7 +47,9 @@ module.exports.updateUser = async function (req, reply) {
 };
 
 module.exports.deleteUser = async function (req, reply) {
+  console.log(req);
   const { id } = req.params;
+  console.log(`id=${id}`);
   const deletedUser = await prisma.user.delete({
     where: {
       id: Number(id),

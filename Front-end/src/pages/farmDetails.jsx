@@ -13,6 +13,7 @@ const theme = createTheme({
     },
   },
 });
+
 export default function FarmDetails() {
   const [load, setLoad] = useState({});
   const [dataView, setDataView] = useState([]);
@@ -24,6 +25,13 @@ export default function FarmDetails() {
       setLoad(false);
     });
   }, []);
+  const convertTime = (time) => {
+    return new Date(time).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
   return (
     <div>
       <Header />
@@ -67,7 +75,7 @@ export default function FarmDetails() {
               ชื่อฟาร์ม : {dataView.farmName}
             </Typography>
             <Typography variant="h6" padding={1} textAlign="center">
-              วันที่สร้างฟาร์ม : {dataView.createdAt}
+              วันที่สร้างฟาร์ม : {convertTime(dataView.createdAt)}
             </Typography>
           </Box>
         </ThemeProvider>

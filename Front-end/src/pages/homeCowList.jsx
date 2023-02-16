@@ -9,7 +9,6 @@ import InputBase from "@mui/material/InputBase";
 import AddIcon from "@mui/icons-material/Add";
 import { api } from "../baseURL/url";
 import { useParams } from "react-router-dom";
-
 import {
   Paper,
   Box,
@@ -23,8 +22,13 @@ import {
   TableRow,
   TableCell,
   Table,
+  TableBody,
+  TableHead,
+  Menu,
 } from "@mui/material";
-
+import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 const theme = createTheme({
   palette: {
     secondary: {
@@ -59,7 +63,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -70,9 +73,8 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function HomeCowList() {
-  const { id } = useParams();
-
-  // const id = localStorage.getItem("Logged");
+  // const { id } = useParams();
+  const id = localStorage.getItem("Logged");
   const [loading, setLoading] = useState(false); //state loading รอ data
   const [dataList, setDataList] = useState([]);
   console.log("id", id);
@@ -82,19 +84,36 @@ export default function HomeCowList() {
       setDataList(res.data);
       setLoading();
       console.log("dataList", dataList);
+      //  api.get(`api/cow`).then((res) => {
+      //    setDataList(res.data.filter((item) => item.dataList === this.id));
+      //    setLoading();
+      //  });
     });
   }, []);
   const handleChange = (event) => {
-    setAge(event.target.value);
+    setDataList(event.target.value);
   };
 
-  const [age, setAge] = React.useState();
-
+  const convertTime = (time) => {
+    return new Date(time).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+  //เมนู Basic menu
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <>
       <Header />
       <Container />
-      {/* <br /> <br /> */}
       <Box
         style={{ justifyContent: "center" }}
         sx={{
@@ -137,8 +156,6 @@ export default function HomeCowList() {
                 <Select
                   labelId="demo-select-small"
                   id="demo-select-small"
-                  value={age}
-                  label="Age"
                   onChange={handleChange}
                   sx={{
                     backgroundColor: "#7F9F9A",
@@ -178,37 +195,75 @@ export default function HomeCowList() {
               borderColor: "#595959",
             }}
           >
-            <Table sx={{ minWidth: 650 }}>
-              <TableRow>
-                <TableCell colSpan={2} align="center">
-                  ชื่อวัว
-                </TableCell>
-                <TableCell align="center">อายุ</TableCell>
-                <TableCell align="center">เพศ</TableCell>
-                <TableCell align="center">อื่นๆ</TableCell>
-              </TableRow>
-              {dataList.map((item) => (
+            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <TableHead>
                 <TableRow>
-                  <TableCell align="right">
-                    <img
-                      style={{ borderRadius: 30, height: 50, width: 50 }}
-                      src={item.cowImage}
-                    ></img>
-                  </TableCell>
-                  <TableCell>
-                    <Typography align="left">{item.cowName}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography align="center">{item.dobCow}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography align="center">{item.sex}</Typography>
-                  </TableCell>
-                  <TableCell>
-                    <Typography align="center">{item.detail}</Typography>
-                  </TableCell>
+                  <TableCell align="center">รหัสประจำตัววัว</TableCell>
+                  <TableCell align="right">ชื่อวัว</TableCell>
+                  <TableCell> </TableCell>
+                  <TableCell align="center">วันเกิด</TableCell>
+                  <TableCell align="right">เพศ</TableCell>
+                  {/* <TableCell align="right">อื่นๆ</TableCell> */}
+                  <TableCell align="center">...</TableCell>
                 </TableRow>
-              ))}
+              </TableHead>
+              <TableBody>
+                {dataList &&
+                  dataList.map((row) => (
+                    <TableRow
+                      key={row.id}
+                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                    >
+                      <Typography align="center" sx={{ mt: 3 }}>
+                        {row.rfId}
+                      </Typography>
+                      <TableCell align="right">
+                        <img
+                          style={{ borderRadius: 30, height: 35, width: 35 }}
+                          src={row.cowImage}
+                        ></img>
+                      </TableCell>
+                      <TableCell>
+                        <Typography align="left">{row.cowName}</Typography>
+                      </TableCell>
+                      <TableCell align="center">
+                        {convertTime(row.dobCow)}
+                      </TableCell>
+                      <TableCell align="right">{row.sex}</TableCell>
+                      {/* <TableCell align="right">{row.detail}</TableCell> */}
+                      <TableCell align="center">
+                        <IconButton
+                          // ref={anchorRef}
+                          id="composition-button"
+                          aria-controls={open ? "composition-menu" : undefined}
+                          aria-expanded={open ? "true" : undefined}
+                          aria-haspopup="true"
+                          onClick={handleClick}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleClose}>
+                            <RemoveRedEyeIcon />
+                            ดูข้อมูลเพิ่มเติม
+                          </MenuItem>
+                          <MenuItem onClick={handleClose}>
+                            <AddIcon />
+                            เพิ่มวัคซีน
+                          </MenuItem>
+                        </Menu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+              </TableBody>
             </Table>
           </Paper>
         </ThemeProvider>

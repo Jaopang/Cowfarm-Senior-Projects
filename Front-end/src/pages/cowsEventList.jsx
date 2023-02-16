@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import Header from "../components/Header";
 import Container from "../components/Container";
@@ -11,17 +11,16 @@ import {
   Paper,
   Box,
   Typography,
-  Button,
-  FormControl,
-  InputLabel,
-  Select,
   MenuItem,
   Grid,
   TableRow,
   TableCell,
   Table,
+  Menu,
 } from "@mui/material";
-
+import IconButton from "@mui/material/IconButton";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 const theme = createTheme({
   palette: {
     secondary: {
@@ -56,7 +55,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "inherit",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -67,12 +65,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function CowsEventlist() {
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  //เมนู Basic menu
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
   };
-
-  const [age, setAge] = React.useState();
-
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
   return (
     <>
       <Header />
@@ -121,6 +122,7 @@ export default function CowsEventlist() {
           >
             <Table sx={{ minWidth: 650 }}>
               <TableRow>
+                <TableCell align="center">รหัสประจำตัววัว</TableCell>
                 <TableCell colSpan={2} align="center">
                   ชื่อวัว
                 </TableCell>
@@ -128,8 +130,12 @@ export default function CowsEventlist() {
                 <TableCell align="center">วันติดสัด</TableCell>
                 <TableCell align="center">ตรวจครรภ์</TableCell>
                 <TableCell align="center">กำหนดคลอด</TableCell>
+                <TableCell align="center">...</TableCell>
               </TableRow>
               <TableRow>
+                <Typography align="center" sx={{ mt: 3 }}>
+                  01245
+                </Typography>
                 <TableCell align="right">
                   <img
                     style={{ borderRadius: 30, height: 50, width: 50 }}
@@ -149,8 +155,40 @@ export default function CowsEventlist() {
                   <Typography align="center">4 ก.พ 66 (อีก 85 วัน)</Typography>
                 </TableCell>
                 <TableCell>
+                  <Typography align="center">4 ก.พ 66 (อีก 85 วัน)</Typography>
+                </TableCell>
+                <TableCell>
                   <Typography align="center">
-                    18 ส.ค 66 (อีก 280 วัน)
+                    <IconButton
+                      id="composition-button"
+                      aria-controls={open ? "composition-menu" : undefined}
+                      aria-expanded={open ? "true" : undefined}
+                      aria-haspopup="true"
+                      onClick={handleClick}
+                    >
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Menu
+                      id="basic-menu"
+                      anchorEl={anchorEl}
+                      open={open}
+                      onClose={handleClose}
+                      MenuListProps={{
+                        "aria-labelledby": "basic-button",
+                      }}
+                    >
+                      <MenuItem onClick={handleClose}>
+                        <RemoveRedEyeIcon />
+                        ดูข้อมูลเพิ่มเติม
+                      </MenuItem>
+                      <MenuItem
+                        // onClick={handleClose}
+                        href="/cows_event/createCowEvent"
+                      >
+                        <AddIcon />
+                        เพิ่มกิจกรรมวัว
+                      </MenuItem>
+                    </Menu>
                   </Typography>
                 </TableCell>
               </TableRow>

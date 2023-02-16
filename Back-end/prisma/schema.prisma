@@ -1,5 +1,6 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialActions"]
 }
 
 datasource db {
@@ -10,18 +11,18 @@ datasource db {
 model User {
   id        Int     @id @default(autoincrement())
   email     String  @unique
-  name      String?
-  password  String
-  lineId    String?
+  name      String?  @db.VarChar(150)
+  password  String @db.VarChar(150)
+  lineId    String? @db.VarChar(150)
   userImage String? @db.LongText
   farm      Farm?
 }
 
 model Farm {
   id        Int      @id @default(autoincrement())
-  farmName  String
+  farmName  String @db.VarChar(150)
   createdAt DateTime @default(now()) @updatedAt
-  user      User     @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId    Int      @unique
   cows      Cow[]
 }
@@ -29,27 +30,31 @@ model Farm {
 model Cow {
   id         Int       @id @default(autoincrement())
   cowImage   String?   @db.LongText
-  cowName    String
-  dobCow     DateTime  @default(now()) @updatedAt
-  sex        String
-  detail     String?
+  cowName    String    @db.VarChar(150)
+  rfId       String?   @db.VarChar(150)
+  dobCow     DateTime  @updatedAt
+  sex        String    @db.VarChar(150)
+  detail     String?   @db.VarChar(500)
   farm       Farm      @relation(fields: [farmId], references: [id])
   farmId     Int
   cowEvent   CowEvent? @relation(fields: [cowEventId], references: [id])
   cowEventId Int?      @unique
+  vaccine    Vaccine?  @relation(fields: [vaccineId], references: [id])
+  vaccineId  Int?      @unique
 }
 
 model CowEvent {
-  id           Int      @id @default(autoincrement())
-  cowImage     String?  @db.LongText
-  cowName      String   @db.VarChar(150)
-  dobCow       DateTime
-  sex          String
-  detail       String?
-  semen        String   @db.VarChar(150)
-  breed        DateTime @default(now()) @updatedAt
-  heat         DateTime @default(now()) @updatedAt
-  pregnacyTest String
-  maternity    String
-  cow          Cow[]
+  id    Int      @id @default(autoincrement())
+  semen String   @db.VarChar(150)
+  breed DateTime @default(now()) @updatedAt
+  cow   Cow[]
+}
+
+model Vaccine {
+  id          Int      @id @default(autoincrement())
+  nameVaccineTH String  @db.VarChar(150)
+  nameVaccineEng String @db.VarChar(150)
+  vaccineId  String     @db.VarChar(150) 
+  createdAt   DateTime @default(now()) @updatedAt
+  cows        Cow[]
 }

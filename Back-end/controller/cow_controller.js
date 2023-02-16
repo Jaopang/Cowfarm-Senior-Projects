@@ -1,16 +1,24 @@
 const prisma = require("../src/connection");
 
 module.exports.createCow = async function (req, reply) {
-  const { cowImage, cowName, dobCow, sex, detail, farmId } = req.body;
+  console.log("createCow");
+  console.log(req.body);
+  const { cowImage, cowName, rfId, dobCow, sex, detail, farmId } = req.body;
+  console.log(`cowImage=${cowImage}`);
+  console.log(`cowName=${cowName}`);
+  console.log(`dobCow=${dobCow}`);
+  console.log(`sex=${sex}`);
+  console.log(`detail=${detail}`);
+  console.log(`farmId=${farmId}`);
   const newCow = await prisma.Cow.create({
     data: {
       cowImage,
       cowName,
+      rfId,
       dobCow,
       sex,
       detail,
       farmId: Number(farmId),
-      include: { farm: true },
     },
   });
   reply.code(201).send(newCow);
@@ -33,7 +41,7 @@ module.exports.getCow = async function (req, reply) {
 
 module.exports.updateCow = async function (req, reply) {
   const { id } = req.params;
-  const { cowImage, cowName, dobCow, sex, detail } = req.body;
+  const { cowImage, cowName, rfId, dobCow, sex, detail } = req.body;
   const updatedCow = await prisma.Cow.update({
     where: {
       id: Number(id),
@@ -41,6 +49,7 @@ module.exports.updateCow = async function (req, reply) {
     data: {
       cowImage,
       cowName,
+      rfId,
       dobCow,
       sex,
       detail,

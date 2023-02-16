@@ -1,32 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { styled } from "@mui/material/styles";
 import {
-  AccountCircleIcon,
-  InboxOutlined,
-  MenuIcon,
-} from "@mui/icons-material";
-import {
-  Toolbar,
-  Box,
   AppBar,
-  Button,
-  IconButton,
-  Avatar,
-  MenuItem,
   Typography,
   Paper,
   Stack,
-  Container,
-  Tooltip,
   Grid,
   ListItemButton,
-  ListItemIcon,
   ListItemText,
 } from "@mui/material";
 import AgricultureTwoToneIcon from "@mui/icons-material/AgricultureTwoTone";
 import { api } from "../baseURL/url";
 import PersonIcon from "@mui/icons-material/Person";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Item = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
@@ -38,23 +24,6 @@ export default function Header() {
   const [dataView, setDataView] = useState([]);
   const id = localStorage.getItem("Logged");
   const navigate = useNavigate();
-  const [anchorElNav, setAnchorElNav] = React.useState(null);
-  const [anchorElUser, setAnchorElUser] = React.useState(null);
-
-  const handleOpenNavMenu = (event) => {
-    setAnchorElNav(event.currentTarget);
-  };
-  const handleOpenUserMenu = (event) => {
-    setAnchorElUser(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
-  };
-
-  const handleCloseUserMenu = () => {
-    setAnchorElUser(null);
-  };
   useEffect(() => {
     api.get(`api/user/${id}`).then((res) => {
       setDataView(res.data);

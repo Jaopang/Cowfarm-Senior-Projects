@@ -38,15 +38,13 @@ const theme = createTheme({
   },
 });
 
-export default function CreateCows() {
+export default function CreateVaccine() {
   const [file, setFile] = useState("");
   const navigate = useNavigate();
   const id = localStorage.getItem("Logged");
   console.log("id", id);
   const [data, setData] = useState({
     cowName: "",
-    cowImage: "",
-    rfId: "",
     dobtime: new Date(),
     sex: "",
     detail: "",
@@ -58,13 +56,13 @@ export default function CreateCows() {
     setData({ ...data, [event.target.name]: event.target.value });
   };
   const handleImage = (event) => {
-    let cowImage = event.target.files;
+    let image = event.target.files;
     let read = new FileReader();
     read.onload = (event) => {
-      setData({ ...data, cowImage: String(event.target?.result) });
+      setData({ ...data, image: String(event.target?.result) });
     };
-    read.readAsDataURL(cowImage[0]);
-    setFile(URL.createObjectURL(cowImage[0]));
+    read.readAsDataURL(image[0]);
+    setFile(URL.createObjectURL(image[0]));
   };
   useEffect(() => {
     dayjs.locale("th");
@@ -122,56 +120,8 @@ export default function CreateCows() {
         >
           <ThemeProvider theme={theme}>
             <Typography variant="h4" padding={3} textAlign="center">
-              เพิ่มวัว
+              เพิ่มวัคซีน
             </Typography>
-            <div>
-              <TableCell rowSpan={4} sx={{ textAlign: "center" }}>
-                {file ? (
-                  <div>
-                    <TableRow>
-                      <img
-                        src={file}
-                        style={{
-                          height: 150,
-                          width: 150,
-                          borderRadius: 5,
-                          marginRight: "auto",
-                        }}
-                      />
-                    </TableRow>
-                    <TableRow>
-                      <Button variant="outlined" component="label" size="small">
-                        เปลี่ยนรูปภาพ
-                        <input
-                          hidden
-                          accept="image/*"
-                          multiple
-                          type="file"
-                          onChange={handleImage}
-                        />
-                      </Button>
-                    </TableRow>
-                  </div>
-                ) : (
-                  <Button
-                    variant="outlined"
-                    size="large"
-                    sx={{ height: 150, width: 150 }}
-                    component="label"
-                  >
-                    <AddPhotoAlternateIcon />
-                    เพิ่มรูปภาพ
-                    <input
-                      hidden
-                      accept="image/*"
-                      multiple
-                      type="file"
-                      onChange={handleImage}
-                    />
-                  </Button>
-                )}
-              </TableCell>
-            </div>
             <Grid
               container
               direction="row"
@@ -182,21 +132,21 @@ export default function CreateCows() {
               <Grid
                 item
                 xs={4}
-                md={3}
+                md={4}
                 sx={{ marginTop: 1 }}
                 justifyContent="center"
               >
                 <Typography variant="contained" sx={{ mt: 15 }}>
-                  ชื่อวัว :
+                  ชื่อวัคซีน(ภาษาไทย) :
                 </Typography>
               </Grid>
               <Grid item md={8} xs={8}>
                 <TextField
-                  name="cowName"
+                  name="nameVaccineTH"
                   margin="normal"
-                  type={"email"}
+                  type={"nameVaccine"}
                   variant="outlined"
-                  placeholder="กรุณาใส่ชื่อวัว"
+                  placeholder="กรุณาใส่ชื่อวัคซีน(ภาษาไทย)"
                   sx={{ width: 265 }}
                   onChange={handleData}
                 />
@@ -204,21 +154,21 @@ export default function CreateCows() {
               <Grid
                 item
                 xs={4}
-                md={3}
+                md={4}
                 sx={{ marginTop: 1 }}
                 justifyContent="center"
               >
                 <Typography variant="contained" sx={{ mt: 15 }}>
-                  รหัสประจำตัววัว :
+                  ชื่อวัคซีน(ภาษาอังกฤษ) :
                 </Typography>
               </Grid>
               <Grid item md={8} xs={8}>
                 <TextField
-                  name="rfId"
+                  name="nameVaccineEng"
                   margin="normal"
-                  type={"rfId"}
+                  type={"nameVaccine"}
                   variant="outlined"
-                  placeholder="กรุณาใส่รหัสประจำตัววัว"
+                  placeholder="กรุณาใส่ชื่อวัคซีน(ภาษาอังกฤษ)"
                   sx={{ width: 265 }}
                   onChange={handleData}
                 />
@@ -226,78 +176,21 @@ export default function CreateCows() {
               <Grid
                 item
                 xs={4}
-                md={3}
+                md={4}
                 sx={{ marginTop: 1 }}
                 justifyContent="center"
               >
                 <Typography variant="contained" sx={{ mt: 15 }}>
-                  วันเกิดวัว:
+                  รหัสวัคซีน :
                 </Typography>
               </Grid>
-              <Grid item md={8} xs={8} sx={{ mt: 2 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DesktopDatePicker
-                    inputFormat="MM/DD/YYYY" //depends onn dats lib
-                    value={dayjs(data.dobtime)}
-                    onChange={(e) => setData({ ...data, dobtime: dayjs(e) })}
-                    renderInput={(params) => (
-                      <TextField name="dobtime" {...params} />
-                    )}
-                    views={["day", "month"]}
-                    showDaysOutsideCurrentMonth
-                  />
-                </LocalizationProvider>
-              </Grid>
-              <br />
-              <Grid
-                item
-                xs={4}
-                md={3}
-                sx={{ marginTop: 1 }}
-                justifyContent="center"
-              >
-                <Typography variant="contained" sx={{ mt: 15 }}>
-                  เพศวัว :
-                </Typography>
-              </Grid>
-              <Grid item md={8} xs={8} sx={{ mt: 2 }}>
-                <RadioGroup
-                  name="sex"
-                  label="sex"
-                  onChange={handleData}
-                  sx={{ width: 100 }}
-                >
-                  <FormControlLabel
-                    value="เพศเมีย"
-                    control={<Radio />}
-                    label="เพศเมีย"
-                  />
-                  <FormControlLabel
-                    value="เพศผู้"
-                    control={<Radio />}
-                    label="เพศผู้"
-                  />
-                </RadioGroup>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                md={3}
-                sx={{ marginTop: 1 }}
-                justifyContent="center"
-              >
-                <Typography variant="contained" sx={{ marginTop: 15 }}>
-                  อื่นๆ :
-                </Typography>
-              </Grid>
-              <Grid item md={8} xs={8} sx={{ height: 50 }}>
+              <Grid item md={8} xs={8}>
                 <TextField
-                  name="detail"
+                  name="vaccineId"
                   margin="normal"
-                  type={"detail"}
+                  type={"vaccineId"}
                   variant="outlined"
-                  fullWidth={true}
-                  placeholder="รายละเอียดต่างๆของวัว"
+                  placeholder="กรุณาใส่รหัสวัคซีน"
                   sx={{ width: 265 }}
                   onChange={handleData}
                 />

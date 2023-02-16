@@ -10,7 +10,9 @@ import CowsEventView from "./pages/cowsEventView";
 import CreateCowEvent from "./pages/createCowEvent";
 import FarmDetails from "./pages/farmDetails";
 import Profile from "./pages/profile";
+import EditProfile from "./pages/editProfile";
 import Createnewfarm from "./pages/createNewFarm";
+import CreateVaccine from "./pages/createVaccine";
 
 function App() {
   return (
@@ -32,7 +34,9 @@ function App() {
         />
         <Route path="/farm_details" element={<FarmDetails />} />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/editProfile/:id" element={<EditProfile />} />
         <Route path="/createNewFarm/:id" element={<Createnewfarm />} />
+        <Route path="/createVaccine" element={<CreateVaccine />} />
       </Routes>
     </BrowserRouter>
   );

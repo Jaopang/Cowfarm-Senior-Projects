@@ -76,19 +76,6 @@ export default function CreateCowEvent() {
             <Typography variant="h4" padding={3} textAlign="center">
               เพิ่มกิจกรรมวัว
             </Typography>
-            <div>
-              <Button
-                variant="contained"
-                component="label"
-                sx={{ height: 45 }}
-                color="secondary"
-                borderRadius={5}
-              >
-                อัพรูปภาพ
-                <input hidden accept="image/*" multiple type="file" />
-                <AddPhotoAlternateIcon />
-              </Button>
-            </div>
             <Grid
               container
               direction="row"
@@ -96,78 +83,6 @@ export default function CreateCowEvent() {
               alignItems="center"
               sx={{ ml: 10, padding: 1 }}
             >
-              <Grid
-                item
-                xs={4}
-                md={3}
-                sx={{ marginTop: 1 }}
-                justifyContent="center"
-              >
-                <Typography variant="contained" sx={{ mt: 15 }}>
-                  ชื่อวัว :
-                </Typography>
-              </Grid>
-              <Grid item md={8} xs={8}>
-                <TextField
-                  name="email"
-                  margin="normal"
-                  type={"email"}
-                  variant="outlined"
-                  placeholder="กรุณาใส่ชื่อวัว"
-                  sx={{ width: 265 }}
-                />
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                md={3}
-                sx={{ marginTop: 1 }}
-                justifyContent="center"
-              >
-                <Typography variant="contained" sx={{ mt: 15 }}>
-                  วันเกิดวัว:
-                </Typography>
-              </Grid>
-              <Grid item md={8} xs={8} sx={{ mt: 2 }}>
-                <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    views={["day", "month", "year"]}
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                    renderInput={(params) => (
-                      <TextField {...params} helperText={null} />
-                    )}
-                  />
-                </LocalizationProvider>
-              </Grid>
-              <br />
-              <Grid
-                item
-                xs={4}
-                md={3}
-                sx={{ marginTop: 1 }}
-                justifyContent="center"
-              >
-                <Typography variant="contained" sx={{ mt: 15 }}>
-                  เพศวัว :
-                </Typography>
-              </Grid>
-              <Grid item md={8} xs={8} sx={{ mt: 3 }}>
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  value={age}
-                  label="Age"
-                  onChange={handleChange}
-                  sx={{ width: 100 }}
-                >
-                  <MenuItem value={10}>เพศผู้</MenuItem>
-                  <MenuItem value={20}>เพศเมีย</MenuItem>
-                </Select>
-                {/* </FormControl> */}
-              </Grid>
               <Grid
                 item
                 xs={4}
@@ -213,27 +128,6 @@ export default function CreateCowEvent() {
                     )}
                   />
                 </LocalizationProvider>
-              </Grid>
-              <Grid
-                item
-                xs={4}
-                md={3}
-                sx={{ marginTop: 2 }}
-                justifyContent="center"
-              >
-                <Typography variant="contained" sx={{ marginTop: 15 }}>
-                  อื่นๆ :{" "}
-                </Typography>
-              </Grid>
-              <Grid item md={8} xs={8} sx={{ mt: 1 }}>
-                <TextField
-                  name="detail"
-                  margin="normal"
-                  type={"detail"}
-                  variant="outlined"
-                  placeholder="รายละเอียดต่างๆของวัว"
-                  sx={{ width: 265 }}
-                />
               </Grid>
             </Grid>
             <br />
