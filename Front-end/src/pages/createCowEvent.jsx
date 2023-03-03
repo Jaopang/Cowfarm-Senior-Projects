@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect } from "react";
 import Header from "../components/Header";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
@@ -8,16 +8,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import CreateNewFolderIcon from "@mui/icons-material/CreateNewFolder";
-
-import {
-  Box,
-  Typography,
-  Button,
-  Select,
-  MenuItem,
-  Grid,
-  TextField,
-} from "@mui/material";
+import { api } from "../baseURL/url";
+import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { useNavigate, useLocation } from "react-router-dom";
+import "dayjs/locale/th";
+import dayjs from "dayjs";
+import { Box, Typography, Button, Grid, TextField } from "@mui/material";
 
 const theme = createTheme({
   palette: {
@@ -31,11 +27,23 @@ const theme = createTheme({
 });
 
 export default function CreateCowEvent() {
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const name = location.pathname;
+  const id = name.split("/").slice(-1).join(" ");
+  console.log("id", id);
+  const [data, setData] = useState({
+    semen: "",
+    breed: new Date(),
+  });
+  const createCowEvent = async () => {
+    data.id = id;
+    api.post("/api/cowEvent", data).then((res) => navigate(`/home`));
+    console.log("Success:", data);
   };
-
-  const [age, setAge] = React.useState();
+  const handleDataEvent = (event) => {
+    setData({ ...data, [event.target.name]: event.target.value });
+  };
   const [value, setValue] = React.useState(null);
   return (
     <>
@@ -96,12 +104,13 @@ export default function CreateCowEvent() {
               </Grid>
               <Grid item md={8} xs={8} sx={{ mt: 1 }}>
                 <TextField
-                  name="detail"
+                  name="semen"
                   margin="normal"
-                  type={"detail"}
+                  type={"semen"}
                   variant="outlined"
                   placeholder="กรุณาใส่ชื่อน้ำเชื้อตัวผู้"
                   sx={{ width: 265 }}
+                  onChange={handleDataEvent}
                 />
               </Grid>
               <Grid
@@ -117,15 +126,15 @@ export default function CreateCowEvent() {
               </Grid>
               <Grid item md={8} xs={8} sx={{ mt: 2 }}>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <DatePicker
-                    views={["day", "month", "year"]}
-                    value={value}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
+                  <DesktopDatePicker
+                    inputFormat="MM/DD/YYYY" //depends onn dats lib
+                    value={dayjs(data.breed)}
+                    onChange={(e) => setData({ ...data, breed: dayjs(e) })}
                     renderInput={(params) => (
-                      <TextField {...params} helperText={null} />
+                      <TextField name="breed" {...params} />
                     )}
+                    views={["day", "month"]}
+                    showDaysOutsideCurrentMonth
                   />
                 </LocalizationProvider>
               </Grid>
@@ -135,6 +144,7 @@ export default function CreateCowEvent() {
               sx={{ marginTop: 3, borderRadius: 3 }}
               variant="contained"
               color="success"
+              onClick={createCowEvent}
             >
               บันทึกข้อมูล
               <CreateNewFolderIcon />

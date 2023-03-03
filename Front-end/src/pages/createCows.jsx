@@ -51,8 +51,9 @@ export default function CreateCows() {
     sex: "",
     detail: "",
     farmId: "",
+    cowEventId: "",
+    vaccineId: "",
   });
-
   const [datat, setDatat] = useState([]);
   const handleData = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });

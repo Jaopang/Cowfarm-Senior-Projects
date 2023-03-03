@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, TableCell } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../components/Header";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
+import { api } from "../baseURL/url";
 
 const theme = createTheme({
   palette: {
@@ -20,6 +21,36 @@ const theme = createTheme({
 });
 
 export default function CowsEventView() {
+  const [dataList, setDataList] = useState([]);
+  console.log("dataList", dataList);
+
+  const [loading, setLoading] = useState(false); //state loading รอ data
+  const [data, setData] = useState({
+    cowName: "",
+    cowImage: "",
+    rfId: "",
+    dobtime: new Date(),
+    sex: "",
+    detail: "",
+    semen: "",
+    breed: "",
+    nameVaccineTH: "",
+    nameVaccineEng: "",
+    createdAt: "",
+  });
+  useEffect(() => {
+    getDataById();
+  }, []);
+  const getDataById = async () => {
+    const res = await api.get(`api/cow`);
+    setDataList(res.data);
+    console.log("data", data);
+    setLoading();
+  };
+  const handleData = (event) => {
+    // setDataList(event.target.value);
+    setDataList({ ...data, [event.target.name]: event.target.value });
+  };
   return (
     <>
       <Header />
@@ -59,14 +90,15 @@ export default function CowsEventView() {
               },
             }}
           >
+            {/* { dataList.map((item) => ())} */}
             <TableCell align="right">
               <img
                 style={{ height: 250, width: 200 }}
-                src="https://cms.dmpcdn.com/dara/2021/11/10/22126e10-41d7-11ec-ac29-755e2c04978c_original.jpg"
+                src={dataList.cowImage}
               ></img>
             </TableCell>
             <Typography variant="h6" padding={1} textAlign="center">
-              ชื่อวัว : ปีโป้
+              ชื่อวัว :{dataList.cowName}
             </Typography>
             <Typography variant="h6" padding={1} textAlign="center">
               วันเกิด : วัน พุธ ที่ 3 กุมภาพันธ์ 2564 (1 ปี 9 เดือน 6 วัน)
@@ -74,6 +106,17 @@ export default function CowsEventView() {
             <Typography variant="h6" padding={1} textAlign="center">
               เพศ : ผู้
             </Typography>
+            {/* Vaccine */}
+            <Typography variant="h6" padding={1} textAlign="center">
+              น้ำเชื้อตัวผู้ : CY133{" "}
+            </Typography>
+            <Typography variant="h6" padding={1} textAlign="center">
+              น้ำเชื้อตัวผู้ : CY133{" "}
+            </Typography>
+            <Typography variant="h6" padding={1} textAlign="center">
+              กลับสัด 1 : วัน อาทิตย์ ที่ 27 พฤศจิกายน 2565 (อีก 16 วัน){" "}
+            </Typography>
+            {/* Event */}
             <Typography variant="h6" padding={1} textAlign="center">
               น้ำเชื้อตัวผู้ : CY133{" "}
             </Typography>

@@ -25,7 +25,9 @@ module.exports.createCow = async function (req, reply) {
 };
 
 module.exports.getCows = async function (req, reply) {
-  const Cows = await prisma.Cow.findMany();
+  const Cows = await prisma.Cow.findMany({
+    include: { cowEvent: true },
+  });
   reply.send(Cows);
 };
 

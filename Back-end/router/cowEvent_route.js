@@ -2,14 +2,15 @@ const {
   createCowEvent,
   getCowEvents,
   getCowEvent,
-  updateCowEvent,
-  deleteCowEvent,
+  updatedCowEvent,
+  deletedCowEvent,
 } = require("../controller/cowEvent_controller");
 module.exports = function (fastify, opts, done) {
   fastify.get("/cowEvent", getCowEvents);
   fastify.get("/cowEvent/:id", getCowEvent);
   fastify.post("/cowEvent", createCowEvent);
-  fastify.put("/cowEvent/:id", updateCowEvent);
-  fastify.delete("/cowEvent/:id", deleteCowEvent);
+  fastify.post("/cowEvent/:id", createCowEvent);
+  fastify.put("/cowEvent/:id", updatedCowEvent);
+  fastify.delete("/cowEvent/:id", deletedCowEvent);
   done();
 };

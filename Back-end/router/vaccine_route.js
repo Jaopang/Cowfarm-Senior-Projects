@@ -1,15 +1,16 @@
 const {
-  createVaccine,
-  getVaccines,
-  getVaccine,
-  updateVaccine,
-  deleteVaccine,
+  createCowVaccine,
+  getCowVaccines,
+  getCowVaccine,
+  updateCowVaccine,
+  deleteCowVaccine,
 } = require("../controller/vaccine_controller");
 module.exports = function (fastify, opts, done) {
-  fastify.get("/vaccine", getVaccines);
-  fastify.get("/vaccine/:id", getVaccine);
-  fastify.post("/vaccine", createVaccine);
-  fastify.put("/vaccine/:id", updateVaccine);
-  fastify.delete("/vaccine/:id", deleteVaccine);
+  fastify.get("/CowVaccine", getCowVaccines);
+  fastify.get("/CowVaccine/:id", getCowVaccine);
+  fastify.post("/CowVaccine", createCowVaccine);
+  fastify.post("/CowVaccine/:id", createCowVaccine);
+  fastify.put("/CowVaccine/:id", updateCowVaccine);
+  fastify.delete("/CowVaccine/:id", deleteCowVaccine);
   done();
 };

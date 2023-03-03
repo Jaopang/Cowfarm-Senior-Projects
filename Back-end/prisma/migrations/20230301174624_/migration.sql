@@ -2,9 +2,9 @@
 CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `email` VARCHAR(191) NOT NULL,
-    `name` VARCHAR(191) NULL,
-    `password` VARCHAR(191) NOT NULL,
-    `lineId` VARCHAR(191) NULL,
+    `name` VARCHAR(150) NULL,
+    `password` VARCHAR(150) NOT NULL,
+    `lineId` VARCHAR(150) NULL,
     `userImage` LONGTEXT NULL,
 
     UNIQUE INDEX `User_email_key`(`email`),
@@ -14,7 +14,7 @@ CREATE TABLE `User` (
 -- CreateTable
 CREATE TABLE `Farm` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
-    `farmName` VARCHAR(191) NOT NULL,
+    `farmName` VARCHAR(150) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `userId` INTEGER NOT NULL,
 
@@ -26,10 +26,11 @@ CREATE TABLE `Farm` (
 CREATE TABLE `Cow` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `cowImage` LONGTEXT NULL,
-    `cowName` VARCHAR(191) NOT NULL,
-    `dobCow` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    `sex` VARCHAR(191) NOT NULL,
-    `detail` VARCHAR(191) NULL,
+    `cowName` VARCHAR(150) NOT NULL,
+    `rfId` VARCHAR(150) NULL,
+    `dobCow` DATETIME(3) NOT NULL,
+    `sex` VARCHAR(150) NOT NULL,
+    `detail` VARCHAR(500) NULL,
     `farmId` INTEGER NOT NULL,
     `cowEventId` INTEGER NULL,
     `vaccineId` INTEGER NULL,

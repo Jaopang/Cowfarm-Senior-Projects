@@ -1,36 +1,37 @@
 const prisma = require("../src/connection");
 
-module.exports.createVaccine = async function (req, reply) {
+module.exports.createCowVaccine = async function (req, reply) {
   const { nameVaccineTH, nameVaccineEng, vaccineId } = req.body;
-  const newVaccine = await prisma.CowEvent.create({
+  const newCowVaccine = await prisma.CowVaccine.create({
     data: {
       nameVaccineTH,
       nameVaccineEng,
       vaccineId,
+      cowId: Number(id),
     },
   });
-  reply.code(201).send(newVaccine);
+  reply.code(201).send(newCowVaccine);
 };
 
-module.exports.getVaccine = async function (req, reply) {
-  const Vaccine = await prisma.CowEvent.findMany();
-  reply.send(Vaccine);
+module.exports.getCowVaccines = async function (req, reply) {
+  const CowVaccines = await prisma.CowVaccine.findMany();
+  reply.send(CowVaccines);
 };
 
-module.exports.getVaccine = async function (req, reply) {
+module.exports.getCowVaccine = async function (req, reply) {
   const { id } = req.params;
-  const Vaccine = await prisma.Vaccine.findUnique({
+  const CowVaccine = await prisma.CowVaccine.findUnique({
     where: {
       id: Number(id),
     },
   });
-  reply.send(Vaccine);
+  reply.send(CowVaccine);
 };
 
-module.exports.updateVaccine = async function (req, reply) {
+module.exports.updateCowVaccine = async function (req, reply) {
   const { id } = req.params;
   const { nameVaccineTH, nameVaccineEng, vaccineId, createdAt } = req.body;
-  const updateVaccine = await prisma.Vaccine.update({
+  const updateCowVaccine = await prisma.CowVaccine.update({
     where: {
       id: Number(id),
     },
@@ -41,15 +42,15 @@ module.exports.updateVaccine = async function (req, reply) {
       createdAt,
     },
   });
-  reply.send(updateVaccine);
+  reply.send(updateCowVaccine);
 };
 
-module.exports.deleteVaccine = async function (req, reply) {
+module.exports.deleteCowVaccine = async function (req, reply) {
   const { id } = req.params;
-  const deletedVaccine = await prisma.Vaccine.delete({
+  const deletedCowVaccine = await prisma.CowVaccine.delete({
     where: {
       id: Number(id),
     },
   });
-  reply.send(deletedVaccine);
+  reply.send(deletedCowVaccine);
 };

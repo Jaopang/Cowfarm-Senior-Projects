@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { api } from "../baseURL/url";
 import { styled } from "@mui/material/styles";
 import Header from "../components/Header";
 import Container from "../components/Container";
@@ -74,6 +75,34 @@ export default function CowsEventlist() {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  //
+  const id = localStorage.getItem("Logged");
+  const [loading, setLoading] = useState(false); //state loading รอ data
+  const [dataList, setDataList] = useState([]);
+  const [dataListEvent, setDataListEvent] = useState([]);
+
+  console.log("id", id);
+  useEffect(() => {
+    api.get(`api/cow`).then((res) => {
+      setDataList(res.data);
+      setLoading();
+    });
+    // api.get(`api/cowEvent`).then((res) => {
+    //   setDataListEvent(res.data);
+    //   setLoading();
+    // });
+  }, []);
+  const handleChange = (event) => {
+    setDataList(event.target.value);
+  };
+
+  const convertTime = (time) => {
+    return new Date(time).toLocaleDateString("th-TH", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
   return (
     <>
       <Header />
@@ -132,66 +161,150 @@ export default function CowsEventlist() {
                 <TableCell align="center">กำหนดคลอด</TableCell>
                 <TableCell align="center">...</TableCell>
               </TableRow>
-              <TableRow>
-                <Typography align="center" sx={{ mt: 3 }}>
-                  01245
-                </Typography>
-                <TableCell align="right">
-                  <img
-                    style={{ borderRadius: 30, height: 50, width: 50 }}
-                    src="https://www.sarakaset.com/wp-content/uploads/2022/05/raise-cows-02.jpg"
-                  ></img>
-                </TableCell>
-                <TableCell>
-                  <Typography align="left">นิลลลลลลลลลลลลลลล</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography align="center">1Y9M3D</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography align="center">27 พ.ย 65 (อีก 16 วัน)</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography align="center">4 ก.พ 66 (อีก 85 วัน)</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography align="center">4 ก.พ 66 (อีก 85 วัน)</Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography align="center">
-                    <IconButton
-                      id="composition-button"
-                      aria-controls={open ? "composition-menu" : undefined}
-                      aria-expanded={open ? "true" : undefined}
-                      aria-haspopup="true"
-                      onClick={handleClick}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      id="basic-menu"
-                      anchorEl={anchorEl}
-                      open={open}
-                      onClose={handleClose}
-                      MenuListProps={{
-                        "aria-labelledby": "basic-button",
-                      }}
-                    >
-                      <MenuItem onClick={handleClose}>
-                        <RemoveRedEyeIcon />
-                        ดูข้อมูลเพิ่มเติม
-                      </MenuItem>
-                      <MenuItem
-                        // onClick={handleClose}
-                        href="/cows_event/createCowEvent"
-                      >
-                        <AddIcon />
-                        เพิ่มกิจกรรมวัว
-                      </MenuItem>
-                    </Menu>
-                  </Typography>
-                </TableCell>
-              </TableRow>
+              {dataList &&
+                dataList.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <Typography align="center" sx={{ mt: 3 }}>
+                      {row.rfId}
+                    </Typography>
+                    <TableCell align="right">
+                      <img
+                        style={{ borderRadius: 30, height: 50, width: 50 }}
+                        src={row.cowImage}
+                      ></img>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="left">{row.cowName}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">{row.semen}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        27 พ.ย 65 (อีก 16 วัน)
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        4 ก.พ 66 (อีก 85 วัน)
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        4 ก.พ 66 (อีก 85 วัน)
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        <IconButton
+                          id="composition-button"
+                          aria-controls={open ? "composition-menu" : undefined}
+                          aria-expanded={open ? "true" : undefined}
+                          aria-haspopup="true"
+                          onClick={handleClick}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleClose}>
+                            <RemoveRedEyeIcon />
+                            ดูข้อมูลเพิ่มเติม
+                          </MenuItem>
+                          <MenuItem
+                            // onClick={handleClose}
+                            href="/cows_event/createCowEvent"
+                          >
+                            <AddIcon />
+                            เพิ่มกิจกรรมวัว
+                          </MenuItem>
+                        </Menu>
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              {dataListEvent &&
+                dataList.map((row) => (
+                  <TableRow
+                    key={row.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <Typography align="center" sx={{ mt: 3 }}>
+                      {row.rfId}
+                    </Typography>
+                    <TableCell align="right">
+                      <img
+                        style={{ borderRadius: 30, height: 50, width: 50 }}
+                        src={row.cowImage}
+                      ></img>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="left">{row.cowName}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">{row.semen}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        {/* 27 พ.ย 65 (อีก 16 วัน) */}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        {/* 4 ก.พ 66 (อีก 85 วัน) */}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        {/* 4 ก.พ 66 (อีก 85 วัน) */}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography align="center">
+                        <IconButton
+                          id="composition-button"
+                          aria-controls={open ? "composition-menu" : undefined}
+                          aria-expanded={open ? "true" : undefined}
+                          aria-haspopup="true"
+                          onClick={handleClick}
+                        >
+                          <MoreVertIcon />
+                        </IconButton>
+                        <Menu
+                          id="basic-menu"
+                          anchorEl={anchorEl}
+                          open={open}
+                          onClose={handleClose}
+                          MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                          }}
+                        >
+                          <MenuItem onClick={handleClose}>
+                            <RemoveRedEyeIcon />
+                            ดูข้อมูลเพิ่มเติม
+                          </MenuItem>
+                          <MenuItem
+                            // onClick={handleClose}
+                            href="/cows_event/createCowEvent"
+                          >
+                            <AddIcon />
+                            เพิ่มกิจกรรมวัว
+                          </MenuItem>
+                        </Menu>
+                      </Typography>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </Table>
           </Paper>
         </ThemeProvider>

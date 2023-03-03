@@ -1,30 +1,42 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Button } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Header from "../components/Header";
 import Container from "../components/Container";
 import Footer from "../components/Footer";
 import { api } from "../baseURL/url";
+import { Link } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
     secondary: {
-      main: "#3f6560",
+      main: "#7F9F9A",
+    },
+    Error: {
+      main: "#FF4444",
+    },
+    Info: {
+      main: "#FFFFFF",
     },
   },
 });
-
 export default function FarmDetails() {
   const [load, setLoad] = useState({});
   const [dataView, setDataView] = useState([]);
-
   const id = localStorage.getItem("Logged");
+  const [data, setData] = useState({
+    farmName: "",
+  });
   useEffect(() => {
     api.get(`api/farm/${id}`).then((res) => {
       setDataView(res.data);
       setLoad(false);
     });
   }, []);
+
+  const onEdit = (event) => {
+    setData({ ...data, [event.target.name]: event.target.value });
+  };
   const convertTime = (time) => {
     return new Date(time).toLocaleDateString("th-TH", {
       year: "numeric",
@@ -77,6 +89,16 @@ export default function FarmDetails() {
             <Typography variant="h6" padding={1} textAlign="center">
               วันที่สร้างฟาร์ม : {convertTime(dataView.createdAt)}
             </Typography>
+            <Button
+              sx={{ marginTop: 3, borderRadius: 3 }}
+              variant="contained"
+              color="Info"
+              onClick={onEdit}
+              component={Link}
+              to={`/editFarm/${id}`}
+            >
+              แก้ไขข้อมูล
+            </Button>
           </Box>
         </ThemeProvider>
         <br />

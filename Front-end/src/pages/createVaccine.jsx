@@ -19,13 +19,13 @@ import {
   FormControlLabel,
   Radio,
 } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import { api } from "../baseURL/url";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import "dayjs/locale/th";
 import dayjs from "dayjs";
 import axios from "axios";
 import { DesktopDatePicker } from "@mui/x-date-pickers";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const theme = createTheme({
   palette: {
@@ -41,45 +41,38 @@ const theme = createTheme({
 export default function CreateVaccine() {
   const [file, setFile] = useState("");
   const navigate = useNavigate();
-  const id = localStorage.getItem("Logged");
-  console.log("id", id);
+  // const id = localStorage.getItem("Logged");
   const [data, setData] = useState({
-    cowName: "",
-    dobtime: new Date(),
-    sex: "",
-    detail: "",
-    farmId: "",
+    nameVaccineTH: "",
+    nameVaccineEng: "",
+    vaccineId: "",
   });
+  const location = useLocation();
+  const name = location.pathname;
+  const id = name.split("/").slice(-1).join(" ");
+  console.log("id", id);
 
   const [datat, setDatat] = useState([]);
   const handleData = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
-  const handleImage = (event) => {
-    let image = event.target.files;
-    let read = new FileReader();
-    read.onload = (event) => {
-      setData({ ...data, image: String(event.target?.result) });
-    };
-    read.readAsDataURL(image[0]);
-    setFile(URL.createObjectURL(image[0]));
-  };
-  useEffect(() => {
-    dayjs.locale("th");
-    setData({ ...data, farmId: Number(localStorage.getItem("farmId")) });
-    axios()
-      .then(function (res) {
-        setDatat(res.data);
-        console.log(res.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }, []);
 
-  const onCreateCows = async () => {
-    data.farmId = id;
-    api.post("/api/cow", data).then((res) => navigate(`/home`));
+  // useEffect(() => {
+  //   dayjs.locale("th");
+  //   setData({ ...data, farmId: Number(localStorage.getItem("farmId")) });
+  //   axios()
+  //     .then(function (res) {
+  //       setDatat(res.data);
+  //       console.log(res.data);
+  //     })
+  //     .catch(function (error) {
+  //       console.log(error);
+  //     });
+  // }, []);
+
+  const onCreateVaccine = async () => {
+    data.id = id;
+    api.post("/api/vaccine", data).then((res) => navigate(`/home`));
     console.log("Success:", data);
   };
 
@@ -201,7 +194,7 @@ export default function CreateVaccine() {
               sx={{ marginTop: 3, borderRadius: 3 }}
               variant="contained"
               color="success"
-              onClick={onCreateCows}
+              onClick={onCreateVaccine}
             >
               บันทึกข้อมูล
               <CreateNewFolderIcon />

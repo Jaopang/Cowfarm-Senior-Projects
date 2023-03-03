@@ -8,7 +8,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import AddIcon from "@mui/icons-material/Add";
 import { api } from "../baseURL/url";
-import { useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import {
   Paper,
   Box,
@@ -25,10 +25,14 @@ import {
   TableBody,
   TableHead,
   Menu,
+  ListItemButton,
+  Tooltip,
 } from "@mui/material";
 import IconButton from "@mui/material/IconButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import AddCircleIcon from "@mui/icons-material/AddCircle";
+import PreviewIcon from "@mui/icons-material/Preview";
+import MedicationIcon from "@mui/icons-material/Medication";
 const theme = createTheme({
   palette: {
     secondary: {
@@ -73,26 +77,77 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 export default function HomeCowList() {
-  // const { id } = useParams();
+  const navigate = useNavigate();
   const id = localStorage.getItem("Logged");
   const [loading, setLoading] = useState(false); //state loading รอ data
+  const [search, onSearch] = useState("");
   const [dataList, setDataList] = useState([]);
-  console.log("id", id);
 
+  // const [data, setData] = useState({
+  //   userImage: "",
+  //   name: "",
+  //   email: "",
+  //   lineId: "",
+  //   password: "",
+  // });
+  // const [dataEvent, setDataEvent] = useState({
+  //   cowName: "",
+  //   cowImage: "",
+  //   rfId: "",
+  //   dobtime: new Date(),
+  //   sex: "",
+  //   detail: "",
+  //   farmId: "",
+  //   cowEventId: "",
+  //   vaccineId: "",
+  // });
+  // useEffect(() => {
+  //   const getDataById = async () => {
+  //     const res = await api.get(`api/cow`);
+  //     const filtered = res.data.filter((items) => items.id == id);
+  //     setDataCow(filtered);
+  //     setLoading();
+  //   };
+  //   // const getDataCowEvent = async () => {
+  //   //   const res = await api.get(`api/cowEvent`);
+  //   //   const filtered = res.data.filter((items) => items.id == id);
+  //   //   setDataList(filtered);
+  //   //   setLoading();
+  //   // };
+  //   // const getDataVaccine = async () => {
+  //   //   const res = await api.get(`api/vaccine`);
+  //   //   const filtered = res.data.filter((items) => items.id == id);
+  //   //   setDataList(filtered);
+  //   //   setLoading();
+  //   // };
+  // }, []);
   useEffect(() => {
-    api.get(`api/cow`).then((res) => {
-      setDataList(res.data);
-      setLoading();
-      console.log("dataList", dataList);
-      //  api.get(`api/cow`).then((res) => {
-      //    setDataList(res.data.filter((item) => item.dataList === this.id));
-      //    setLoading();
-      //  });
-    });
+    getDataById();
   }, []);
-  const handleChange = (event) => {
-    setDataList(event.target.value);
+
+  const getDataById = async () => {
+    const res = await api.get(`api/cow`);
+    const filtered = res.data.filter((items) => items.farmId == id);
+    setDataList(filtered);
+    setLoading();
   };
+
+  // const handleData = (event) => {
+  //   setData({ ...data, [event.target.name]: event.target.value });
+  // };
+  // const handleDataEvent = (event) => {
+  //   setDataEvent({ ...dataEvent, [event.target.name]: event.target.value });
+  // };
+
+  // const handleChange = (event) => {
+  //   // setDataList(event.target.value);
+  //   setDataList({ ...data, [event.target.name]: event.target.value });
+  // };
+
+  // const handCreateCowEvent = () => {
+  //   // dataList.id = id;
+  //   navigate(`/createCowEvent/${id}`);
+  // };
 
   const convertTime = (time) => {
     return new Date(time).toLocaleDateString("th-TH", {
@@ -101,15 +156,16 @@ export default function HomeCowList() {
       day: "numeric",
     });
   };
+  const checkSex = "เพศเมีย";
   //เมนู Basic menu
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  // const handleClose = () => {
+  //   setAnchorEl(null);
+  // };
   return (
     <>
       <Header />
@@ -129,13 +185,14 @@ export default function HomeCowList() {
       >
         <ThemeProvider theme={theme}>
           <Grid container spacing={2}>
-            <Grid item xs={1} md={1}>
+            <Grid item xs={6} md={2}>
               <Button
                 color="secondary"
                 sx={{
                   borderRadius: 5,
                   padding: 1,
-                  minWidth: 100,
+                  minWidth: 120,
+                  marginLeft: 5,
                   border: 1,
                   boxShadow:
                     "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;",
@@ -147,43 +204,29 @@ export default function HomeCowList() {
                 เพิ่มวัว
               </Button>
             </Grid>
-            <Grid item xs={4} md={4}>
-              <FormControl
-                sx={{ m: 2, minWidth: 100, mt: 0.3, border: "none" }}
-                size="small"
-              >
-                <InputLabel id="demo-select-small">เพศ</InputLabel>
-                <Select
-                  labelId="demo-select-small"
-                  id="demo-select-small"
-                  onChange={handleChange}
-                  sx={{
-                    backgroundColor: "#7F9F9A",
-                    borderRadius: 5,
-                    border: 0,
-                    boxShadow:
-                      "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;",
-                  }}
-                >
-                  <MenuItem value={10}>เพศผู้</MenuItem>
-                  <MenuItem value={20}>เพศเมีย</MenuItem>
-                </Select>
-              </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-              <Typography sx={{ fontSize: 24 }} align="left">
+
+            <Grid item xs={6}>
+              <Typography sx={{ fontSize: 24 }} align="center">
                 ระบบจัดการฟาร์มวัวบ้านๆ
               </Typography>
             </Grid>
-
-            <Grid>
-              <Search item xs={4} sx={{ mt: 2 }}>
+            <Grid item xs={4} align="center">
+              <Search
+                item
+                xs={4}
+                sm={2}
+                sx={{
+                  boxShadow:
+                    "rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px;",
+                }}
+              >
                 <SearchIconWrapper>
                   <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase
-                  placeholder="Search…"
+                  placeholder="ค้าหาจากรหัสประจำตัววัว"
                   inputProps={{ "aria-label": "search" }}
+                  onChange={(e) => onSearch(e.target.value)}
                 />
               </Search>
             </Grid>
@@ -193,6 +236,8 @@ export default function HomeCowList() {
               backgroundColor: "#F6CA76",
               border: 1,
               borderColor: "#595959",
+              padding: 1,
+              marginTop: 5,
             }}
           >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -203,63 +248,108 @@ export default function HomeCowList() {
                   <TableCell> </TableCell>
                   <TableCell align="center">วันเกิด</TableCell>
                   <TableCell align="right">เพศ</TableCell>
-                  {/* <TableCell align="right">อื่นๆ</TableCell> */}
                   <TableCell align="center">...</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {dataList &&
-                  dataList.map((row) => (
-                    <TableRow
-                      key={row.id}
-                      sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                    >
+                {dataList
+                  .filter((items) => {
+                    return search.toLowerCase() === ""
+                      ? items
+                      : items.rfId.toLowerCase().includes(search);
+                  })
+                  .map((items) => (
+                    <TableRow>
                       <Typography align="center" sx={{ mt: 3 }}>
-                        {row.rfId}
+                        {items.rfId}
                       </Typography>
-                      <TableCell align="right">
+                      <TableCell>
                         <img
+                          src={items.cowImage}
+                          align="right"
+                          alt="img"
                           style={{ borderRadius: 30, height: 35, width: 35 }}
-                          src={row.cowImage}
-                        ></img>
+                        />
                       </TableCell>
                       <TableCell>
-                        <Typography align="left">{row.cowName}</Typography>
+                        <Typography align="left">{items.cowName}</Typography>
                       </TableCell>
-                      <TableCell align="center">
-                        {convertTime(row.dobCow)}
+                      <TableCell>
+                        <Typography align="center">
+                          {convertTime(items.dobCow)}
+                        </Typography>
                       </TableCell>
-                      <TableCell align="right">{row.sex}</TableCell>
-                      {/* <TableCell align="right">{row.detail}</TableCell> */}
+                      <TableCell align="right">{items.sex}</TableCell>
                       <TableCell align="center">
-                        <IconButton
-                          // ref={anchorRef}
-                          id="composition-button"
-                          aria-controls={open ? "composition-menu" : undefined}
-                          aria-expanded={open ? "true" : undefined}
-                          aria-haspopup="true"
-                          onClick={handleClick}
-                        >
-                          <MoreVertIcon />
-                        </IconButton>
-                        <Menu
-                          id="basic-menu"
-                          anchorEl={anchorEl}
-                          open={open}
-                          onClose={handleClose}
-                          MenuListProps={{
-                            "aria-labelledby": "basic-button",
-                          }}
-                        >
-                          <MenuItem onClick={handleClose}>
-                            <RemoveRedEyeIcon />
-                            ดูข้อมูลเพิ่มเติม
-                          </MenuItem>
-                          <MenuItem onClick={handleClose}>
-                            <AddIcon />
-                            เพิ่มวัคซีน
-                          </MenuItem>
-                        </Menu>
+                        <Tooltip title="ดูข้อมูลเพิ่มเติม">
+                          <IconButton
+                            id="compositon-button"
+                            aria-controls={
+                              open ? "conposition-menu" : undefined
+                            }
+                            aria-expanded={open ? "true" : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                            component={Link}
+                            to={`/home/view/${items.id}`}
+                            // to={{
+                            //   pathname: `/home/view/${items.id}`,
+                            //   state: { getDataById },
+                            // }}
+                          >
+                            <PreviewIcon />
+                          </IconButton>
+                        </Tooltip>
+                        {checkSex === items.sex ? (
+                          <Tooltip title="เพิ่มกิจกรรมวัว">
+                            <IconButton
+                              id="compositon-button"
+                              aria-controls={
+                                open ? "conposition-menu" : undefined
+                              }
+                              aria-expanded={open ? "true" : undefined}
+                              aria-haspopup="true"
+                              onClick={handleClick}
+                              component={Link}
+                              to={`/createCowEvent/${items.id}`}
+                            >
+                              <AddCircleIcon />
+                            </IconButton>
+                          </Tooltip>
+                        ) : (
+                          <Tooltip title="เพิ่มกิจกรรมวัว">
+                            <IconButton
+                              disabled
+                              id="compositon-button"
+                              aria-controls={
+                                open ? "conposition-menu" : undefined
+                              }
+                              aria-expanded={open ? "true" : undefined}
+                              aria-haspopup="true"
+                              onClick={handleClick}
+                              component={Link}
+                              to={`/createCowEvent/${items.id}`}
+                            >
+                              <AddCircleIcon />
+                            </IconButton>
+                          </Tooltip>
+                        )}
+
+                        <Tooltip title="เพิ่มวัคซีนวัว">
+                          <IconButton
+                            id="compositon-button"
+                            aria-controls={
+                              open ? "conposition-menu" : undefined
+                            }
+                            aria-expanded={open ? "true" : undefined}
+                            aria-haspopup="true"
+                            onClick={handleClick}
+                            component={Link}
+                            to={`/createVaccine/${items.id}`}
+                          >
+                            <MedicationIcon />
+                          </IconButton>
+                        </Tooltip>
                       </TableCell>
                     </TableRow>
                   ))}

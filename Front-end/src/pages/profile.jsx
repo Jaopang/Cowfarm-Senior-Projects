@@ -40,6 +40,7 @@ export default function Profile() {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [dataView, setDataView] = useState([]);
+  const [loading, setLoading] = useState(false); //state loading รอ data
   const id = localStorage.getItem("Logged");
   console.log("id", id);
   const [data, setData] = useState({
@@ -58,10 +59,14 @@ export default function Profile() {
   const handleData = (event) => {
     setData({ ...data, [event.target.name]: event.target.value });
   };
-  const deleteProfileData = async () => {
-    api.delete(`api/user/${id}`).then((res) => navigate(`/home`));
-    console.log("Success:", data);
-  };
+  //delete item
+  function handleDelete() {
+    const res = api.delete(`api/user/${id}`);
+    setDataView(res.data);
+    setLoading();
+    // กลับไปหน้าที่จากมา
+    navigate(`/`);
+  }
   return (
     <div>
       <Header />
@@ -131,10 +136,8 @@ export default function Profile() {
               sx={{ marginTop: 3, borderRadius: 3 }}
               variant="contained"
               onClick={handleOpen}
-
-              // onClick={deleteProfileData}
             >
-              ลบวัว (ถาวร)
+              ลบ (ถาวร)
             </Button>
             <br />
             <Modal
@@ -181,7 +184,7 @@ export default function Profile() {
                   <Button
                     variant="contained"
                     color="Error"
-                    onClick={deleteProfileData}
+                    onClick={() => handleDelete(dataView.id)}
                   >
                     ลบ
                   </Button>

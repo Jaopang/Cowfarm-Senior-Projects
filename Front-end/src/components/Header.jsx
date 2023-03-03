@@ -47,11 +47,11 @@ export default function Header() {
             <ListItemText primary="หน้าแรก" />
           </ListItemButton>
         </Grid>
-        <Grid>
+        {/* <Grid>
           <ListItemButton href="/cows_event">
             <ListItemText primary="กิจกรรมวัว" />
           </ListItemButton>
-        </Grid>
+        </Grid> */}
         <Grid>
           <ListItemButton href="/farm_details">
             <ListItemText primary="รายละเอียดฟาร์ม" />
